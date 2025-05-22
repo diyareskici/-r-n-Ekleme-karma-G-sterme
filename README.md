@@ -1,0 +1,1 @@
+# -r-n-Ekleme-karma-G-sterme
