@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_URUN 100
+
+typedef struct {
+    char kod[10];
+    char isim[50];
+    float fiyat;
+    int stok;
+    int aktif; // 1: aktif, 0: silinmiş
+} Urun;
+
+Urun urunler[MAX_URUN];
+int urun_sayisi = 0;
+
+// Ürün kodu oluştur (örnek: U001, U002, ...)
+void urun_kodu_olustur(char *kod, int index) {
+    sprintf(kod, "U%03d", index + 1);
+}
+
+void urun_ekle() {
+    if (urun_sayisi >= MAX_URUN) {
+        printf("Maksimum ürün sayısına ulaşıldı!\n");
+        return;
+    }
+
+    Urun yeni;
+    urun_kodu_olustur(yeni.kod, urun_sayisi);
+
+    printf("Ürün adı: ");
+    scanf(" %[^\n]", yeni.isim);
+    printf("Fiyat: ");
+    scanf("%f", &yeni.fiyat);
+    printf("Stok: ");
+    scanf("%d", &yeni.stok);
+
+    yeni.aktif = 1;
+    urunler[urun_sayisi++] = yeni;
+
+    printf("Ürün eklendi! Ürün kodu: %s\n", yeni.kod);
+}
+
+void urunleri_goster() {
+    printf("\n--- Ürün Listesi ---\n");
+    for (int i = 0; i < urun_sayisi; i++) {
+        if (urunler[i].aktif) {
+            printf("Kod: %s | Ad: %s | Fiyat: %.2f TL | Stok: %d\n",
+                   urunler[i].kod, urunler[i].isim, urunler[i].fiyat, urunler[i].stok);
+        }
+    }
+}
+
+void urun_guncelle() {
+    char kod[10];
+    printf("Güncellenecek ürün kodunu girin: ");
+    scanf("%s", kod);
+
+    for (int i = 0; i < urun_sayisi; i++) {
+        if (urunler[i].aktif && strcmp(urunler[i].kod, kod) == 0) {
+            printf("Yeni ad: ");
+            scanf(" %[^\n]", urunler[i].isim);
+            printf("Yeni fiyat: ");
+            scanf("%f", &urunler[i].fiyat);
+            printf("Yeni stok: ");
+            scanf("%d", &urunler[i].stok);
+            printf("Ürün güncellendi.\n");
+            return;
+        }
+    }
+    printf("Ürün bulunamadı.\n");
+}
+
+void urun_sil() {
+    char kod[10];
+    printf("Silinecek ürün kodunu girin: ");
+    scanf("%s", kod);
+
+    for (int i = 0; i < urun_sayisi; i++) {
+        if (urunler[i].aktif && strcmp(urunler[i].kod, kod) == 0) {
+            urunler[i].aktif = 0;
+            printf("Ürün silindi.\n");
+            return;
+        }
+    }
+    printf("Ürün bulunamadı.\n");
+}
+
+int main() {
+    int secim;
+
+    do {
+        printf("\n--- Ürün Yönetim Sistemi ---\n");
+        printf("1. Ürün Ekle\n");
+        printf("2. Ürünleri Göster\n");
+        printf("3. Ürün Güncelle\n");
+        printf("4. Ürün Sil\n");
+        printf("0. Çıkış\n");
+        printf("Seçiminiz: ");
+        scanf("%d", &secim);
+
+        switch (secim) {
+            case 1: urun_ekle(); break;
+            case 2: urunleri_goster(); break;
+            case 3: urun_guncelle(); break;
+            case 4: urun_sil(); break;
+            case 0: printf("Programdan çıkılıyor...\n"); break;
+            default: printf("Geçersiz seçim.\n");
+        }
+    } while (secim != 0);
+
+    return 0;
+}
